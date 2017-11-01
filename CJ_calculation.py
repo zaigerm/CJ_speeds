@@ -6,7 +6,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import sys
 import os
-matplotlib.use('TKAgg') #this supresses the ploting on the terminal 
+#matplotlib.use('TKAgg') #this supresses the ploting on the terminal 
 
 
 # Disable
@@ -21,6 +21,11 @@ def get_cj(p,T,species,mech):
 	from SDToolbox import *
 	[cj,_] = CJspeed(p,T,species,mech,0)
 	return cj
+def get_gamma(p,T,species,mech)
+	import cantera as ct
+	gas = ct.Solution(mech)
+	gas.TPX = T,p,species
+	
 
 
 p =101325
@@ -29,30 +34,37 @@ N2_dilution = []
 CO2_dilution = []
 cj_n2 = []
 cj_co2 = []
-dilution_range = np.arange(0.0,0.1,0.05)
+dilution_range = np.arange(0.0,0.6,0.005)
 #print len(dilution_range)
 mech = 'CSMmech7_2.cti'
 for i in dilution_range:
 	N2_dilution.append('C3H8:1 N2O:10 N2:'+str(i))
 	CO2_dilution.append('C3H8:1 N2O:10 CO2:'+str(i))
 
-#print N2_dilution[0]
-for bleh in xrange(len(dilution_range)):
-	blockPrint()
-	cj_n2 = get_cj(p,T,N2_dilution[bleh],mech)
-	cj_co2 = get_cj(p,T,CO2_dilution[bleh],mech)
-	enablePrint()
+#print len(N2_dilution)
 
-#plt = matplotlib.pyplot
-
-fig = plt.figure()
-plt.plot(dilution_range,cj_co2)
-plt.plot(dilution_range,cj_n2)
-plt.savefig('cj_speeds.png')
-#for i in xrange(len(self.species)):
-#string_list.append(self.species[i] + ':' + str(self.concentration[i,x,y]))
-#gas.X = ', '.join(string_list)
 
 if __name__ == '__main__':
 	#a = get_cj(p, T, N2_dilution, mech)
-	print cj_co2
+	#print cj_co2
+	for bleh in xrange(len(dilution_range)):
+	blockPrint()
+	cj_n2.append(get_cj(p,T,N2_dilution[bleh],mech))
+	cj_co2.append(get_cj(p,T,CO2_dilution[bleh],mech))
+	enablePrint()
+	
+#plt = matplotlib.pyplot
+	
+	fig = plt.figure(num =None, figsize = (8,6), dpi = 600)
+	plt.plot(dilution_range*.95,cj_co2)
+	plt.plot(dilution_range,cj_n2, '--')
+#plt.plot(values['x'], values['p'], 'k')
+	plt.legend((r'$CO_{2}$',r'$N_{2}$'))
+	plt.title("CJ Detonation Comparison")
+	plt.xlabel(r'$Y_{N_{2}}$ Equivalent', fontsize=14)
+	plt.ylabel('Velocity [m/s]',fontsize=14)
+#plt.show()
+	plt.savefig('cj_speeds.png')
+#for i in xrange(len(self.species)):
+#string_list.append(self.species[i] + ':' + str(self.concentration[i,x,y]))
+#gas.X = ', '.join(string_list)
