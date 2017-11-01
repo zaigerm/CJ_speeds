@@ -21,10 +21,12 @@ def get_cj(p,T,species,mech):
 	from SDToolbox import *
 	[cj,_] = CJspeed(p,T,species,mech,0)
 	return cj
-def get_gamma(p,T,species,mech)
+def get_gamma(p,T,species,mech):
 	import cantera as ct
 	gas = ct.Solution(mech)
 	gas.TPX = T,p,species
+	gamma = gas.cp/gas.cv
+	return gamma
 	
 
 
@@ -34,7 +36,9 @@ N2_dilution = []
 CO2_dilution = []
 cj_n2 = []
 cj_co2 = []
-dilution_range = np.arange(0.0,0.6,0.005)
+gamma_n2 = []
+gamma_co2 = []
+dilution_range = np.arange(0.0,0.6,0.05)
 #print len(dilution_range)
 mech = 'CSMmech7_2.cti'
 for i in dilution_range:
@@ -45,26 +49,31 @@ for i in dilution_range:
 
 
 if __name__ == '__main__':
+	for it in xrange(len(dilution_range)):
+		gamma_n2.append(get_gamma(p,T,N2_dilution[it],mech))
+		gamma_co2.append(get_gamma(p,T,CO2_dilution[it],mech))
+	print gamma_n2
+	print gamma_co2
 	#a = get_cj(p, T, N2_dilution, mech)
 	#print cj_co2
-	for bleh in xrange(len(dilution_range)):
-	blockPrint()
-	cj_n2.append(get_cj(p,T,N2_dilution[bleh],mech))
-	cj_co2.append(get_cj(p,T,CO2_dilution[bleh],mech))
-	enablePrint()
+	#for bleh in xrange(len(dilution_range)):
+	#	blockPrint()
+	#	cj_n2.append(get_cj(p,T,N2_dilution[bleh],mech))
+	#	cj_co2.append(get_cj(p,T,CO2_dilution[bleh],mech))
+	#	enablePrint()
 	
 #plt = matplotlib.pyplot
 	
-	fig = plt.figure(num =None, figsize = (8,6), dpi = 600)
-	plt.plot(dilution_range*.95,cj_co2)
-	plt.plot(dilution_range,cj_n2, '--')
+	#fig = plt.figure(num =None, figsize = (8,6), dpi = 600)
+	#plt.plot(dilution_range*.95,cj_co2)
+	#plt.plot(dilution_range,cj_n2, '--')
 #plt.plot(values['x'], values['p'], 'k')
-	plt.legend((r'$CO_{2}$',r'$N_{2}$'))
-	plt.title("CJ Detonation Comparison")
-	plt.xlabel(r'$Y_{N_{2}}$ Equivalent', fontsize=14)
-	plt.ylabel('Velocity [m/s]',fontsize=14)
+	#plt.legend((r'$CO_{2}$',r'$N_{2}$'))
+	#plt.title("CJ Detonation Comparison")
+	#plt.xlabel(r'$Y_{N_{2}}$ Equivalent', fontsize=14)
+	#plt.ylabel('Velocity [m/s]',fontsize=14)
 #plt.show()
-	plt.savefig('cj_speeds.png')
+	#plt.savefig('cj_speeds.png')
 #for i in xrange(len(self.species)):
 #string_list.append(self.species[i] + ':' + str(self.concentration[i,x,y]))
 #gas.X = ', '.join(string_list)
