@@ -38,7 +38,7 @@ cj_n2 = []
 cj_co2 = []
 gamma_n2 = []
 gamma_co2 = []
-dilution_range_moles = np.arange(0.0,20.0,0.005)
+dilution_range_moles = np.arange(0.0,30.0,0.005)
 MW_prop = 44.1 #g/mol
 MW_n2o = 44.013 #g/mol
 MW_n2 = 28.0134 #g.mol
@@ -66,14 +66,14 @@ if __name__ == '__main__':
 	#a = get_cj(p, T, N2_dilution, mech)
 	#print cj_co2
 	csv = open('data.csv',"w")
-	csv.write("moles, CJ_n2, CJ_co2\n")
+	csv.write("moles_diluent, CJ_n2, CJ_co2\n")
 	for bleh in xrange(len(dilution_range_moles)):
 		blockPrint()
 		cj_n2.append(get_cj(p,T,N2_dilution[bleh],mech))
 		cj_co2.append(get_cj(p,T,CO2_dilution[bleh],mech))
 		enablePrint()
 		row = str(dilution_range_moles[bleh]) +"," + str(cj_n2[bleh]) + "," + str(cj_co2[bleh]) + "\n"
-	csv.write(row)
+		csv.write(row)
 	
 	csv.close()
 #plt = matplotlib.pyplot
